@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.lumidt.mavenproject2;
+package com.lumidt.iyourmusic;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
@@ -59,7 +54,7 @@ public class Search {
     // Read the developer key from youtube.properties
     Properties properties = new Properties();
     try {
-      InputStream in = Search.class.getResourceAsStream("oi");
+      InputStream in = Search.class.getResourceAsStream("/" + PROPERTIES_FILENAME);
       properties.load(in);
 
     } catch (IOException e) {
@@ -162,7 +157,7 @@ public class Search {
 
       // Double checks the kind is video.
       if (rId.getKind().equals("youtube#video")) {
-        Thumbnail thumbnail = (Thumbnail) singleVideo.getSnippet().getThumbnails().get("default");
+        Thumbnail thumbnail = singleVideo.getSnippet().getThumbnails().get("default");
 
         System.out.println(" Video Id" + rId.getVideoId());
         System.out.println(" Title: " + singleVideo.getSnippet().getTitle());
