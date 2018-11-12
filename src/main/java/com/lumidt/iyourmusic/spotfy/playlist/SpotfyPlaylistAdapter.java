@@ -35,12 +35,14 @@ import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.PlaylistSimplified;
 import com.wrapper.spotify.requests.data.playlists.AddTracksToPlaylistRequest;
 import com.wrapper.spotify.requests.data.playlists.GetListOfUsersPlaylistsRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class SpoftyPlaylistAdapter implements PlaylistManager {
+public class SpotfyPlaylistAdapter implements PlaylistManager {
 
-    private static final String accessToken = "";
-    private static final String userId = "";
+    private static final String accessToken = "BQCl1mIhLG70gvHyLx1MpTpXLF9_-ObtaHY-rp9JfdA_o2qm-v8vCegaKFn0rOz6Jjv05kdQ3gc92wwle1TlwwbcJEk9yauXJF8IPZeGku3Mn7u6dygOOWVce29I1gyAlIcnhW6rxfBjOaBouI__0CqbddbT6qnf6icTxY2qUSMj3GQDPp_d3NPFL6Sq8BqT3ZbEUOzyZMOlt-87iFMDn3Bb45TEDnOwmKKIdkYPYlu_Eq4KHVpcI4nmbN0y_2w6O338Lf_nbQXb";
+    private static final String userId = "lusgo";
     private static String name;
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setAccessToken(accessToken)
@@ -114,7 +116,8 @@ public class SpoftyPlaylistAdapter implements PlaylistManager {
     }
 
     @Override
-    public void getListOfUsersPlaylist() {
+    public List<String> getListOfUsersPlaylist() {
+        List<String> playlistsName = new ArrayList<>();
         GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest = spotifyApi
                 .getListOfUsersPlaylists(userId).limit(50)
                 .build();
@@ -125,13 +128,12 @@ public class SpoftyPlaylistAdapter implements PlaylistManager {
             PlaylistSimplified[] playlistSimplifieds = playlistSimplifiedPaging.getItems();
 
             for (PlaylistSimplified playlistSimplified : playlistSimplifieds) {
-
-                System.out.println(playlistSimplified.getName());
+                playlistsName.add(playlistSimplified.getName());
             }
 
         } catch (IOException | SpotifyWebApiException e) {
             System.out.println("Error: " + e.getMessage());
         }
-
+        return playlistsName;
     }
 }

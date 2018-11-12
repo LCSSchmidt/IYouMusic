@@ -6,7 +6,7 @@
 package com.lumidt.iyourmusic;
 
 import com.lumidt.iyourmusic.spotfy.search.SpotfySearchAdapter;
-import com.lumidt.iyourmusic.spotfy.playlist.SpoftyPlaylistAdapter;
+import com.lumidt.iyourmusic.spotfy.playlist.SpotfyPlaylistAdapter;
 import com.lumidt.iyourmusic.youtube.YoutubeSearchAdapter;
 
 /**
@@ -19,12 +19,12 @@ public class as {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SpoftyPlaylistAdapter playlistAdapter = new SpoftyPlaylistAdapter();
+        SpotfyPlaylistAdapter playlistAdapter = new SpotfyPlaylistAdapter();
         playlistAdapter.createPlaylist("amendoim");
         playlistAdapter.addTracksToPlayList("amendoim", "Run Veorra");
 //        YoutubeSearchAdapter youtubeSearchAdapter = new YoutubeSearchAdapter();
 //        youtubeSearchAdapter.searchTrack("17");
-//        SpoftyPlaylistAdapter creator = new SpoftyPlaylistAdapter("ANEBDIUN");
+//        SpotfyPlaylistAdapter creator = new SpotfyPlaylistAdapter("ANEBDIUN");
 //        creator.createPlaylist_Sync();
 //        SpotfySearchAdapter x = new SpotfySearchAdapter();
 //        x.SearchTracksSync();

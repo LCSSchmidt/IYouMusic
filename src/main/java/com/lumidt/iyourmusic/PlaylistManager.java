@@ -5,6 +5,8 @@
  */
 package com.lumidt.iyourmusic;
 
+import java.util.List;
+
 /**
  *
  * @author stit_
@@ -13,5 +15,5 @@ public interface PlaylistManager {
     public void createPlaylist(String nameOfPlaylist);
     public void getPlayList();
     public void addTracksToPlayList(String playlistName, String trackName);
-    public void getListOfUsersPlaylist();
+    public List<String> getListOfUsersPlaylist();
 }
