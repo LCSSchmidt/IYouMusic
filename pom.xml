@@ -20,6 +20,11 @@
             <id>google-api-services</id>
             <url>http://google-api-client-libraries.appspot.com/mavenrepo</url>
         </repository>
+        <repository>
+            <id>unknown-jars-temp-repo</id>
+            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
+            <url>file:${project.basedir}/lib</url>
+        </repository>
     </repositories>
     <!--DEPENDENCIES-->
     <dependencies>
@@ -27,6 +32,7 @@
             <groupId>se.michaelthelin.spotify</groupId>
             <artifactId>spotify-web-api-java</artifactId>
             <version>2.1.1</version>
+            
         </dependency>
         <!-- YouTube Data V3 support -->
         <dependency>
@@ -40,6 +46,22 @@
             <artifactId>google-http-client-jackson2</artifactId>
             <version>${project.http.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.4</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.4</version>
+        </dependency>
+        <dependency>
+            <groupId>unknown.binary</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <!--BUILD-->
     <build>
@@ -49,6 +71,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
+                
                 <configuration>
                     <mainClass>com.google.api.services.samples.youtube.cmdline.youtube_cmdline_search_sample.Search</mainClass>
                 </configuration>
@@ -58,8 +81,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgument></compilerArgument>
                 </configuration>
             </plugin>

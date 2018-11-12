@@ -1,5 +1,6 @@
-package com.lumidt.iyourmusic;
+package com.lumidt.iyourmusic.youtube;
 
+import com.lumidt.iyourmusic.*;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
