@@ -15,5 +15,6 @@ public interface PlaylistManager {
     public void createPlaylist(String nameOfPlaylist);
     public void getPlayList();
     public void addTracksToPlayList(String playlistName, String trackName);
-    public List<String> getListOfUsersPlaylist();
+    public List<PlaylistContent> getListOfUsersPlaylist();
+    public List<TrackContent> getPlayListTracks(String playlistId);
 }

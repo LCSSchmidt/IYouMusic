@@ -11,9 +11,8 @@ import java.util.List;
  *
  * @author stit_
  */
-public interface SearchManager {
-    public void searchAlbum(String albumName);
-    public void searchArtist(String artistName);
-    public void searchPlaylist(String playlistName);
-    public List<TrackContent>  searchTrack(String trackName);
+public interface PlayerAdapter {
+    public void startResumeUserPlayback(String deviceId, String trackUri);
+    public List<String> getUserAvailableDevices();
+    public void pauseUserPlayback(String device);
 }

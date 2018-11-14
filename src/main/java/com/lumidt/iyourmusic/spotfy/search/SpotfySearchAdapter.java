@@ -8,9 +8,12 @@ package com.lumidt.iyourmusic.spotfy.search;
 import com.lumidt.iyourmusic.spotfy.*;
 import com.lumidt.iyourmusic.*;
 import com.wrapper.spotify.SpotifyApi;
+import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,7 +22,7 @@ import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 public class SpotfySearchAdapter implements SearchManager {
 
     static SpotifyApi spotifyApi = new SpotifyApi.Builder()
-            .setAccessToken("BQDf5Sw0jdoQKRKnYnRu7p4QOIZpF1kpsFOyRJlO0ZYSqcqK37xHusinAhND3vri5TaPjPcaLUGa3GkL9_V_7uNClmnOJ6YHS_xHFxBbX37Fs-HA50RjldgzRjMoCYF4d7Z44gKSODoHg8w9kfYAMPy7mml43-FdgyiJVRzAWjtV2TDbqtJYBpdR4AyNp-3uKV27m2umDFKhLTydACSRmE3Zhem3rMsNWIfIhNlioEMKweUtxugltcM1JuUCv7FgdcDs2RAopho0")
+            .setAccessToken("BQAe-DLVJR45M-nvhYiXqxXw48Yo1iJeH8plHdZ321Fb7h1SY_20kSPaQKJoNMTU4dyt6ENoZYOCDbVjwkbnv5LGHYEsJklXkP5AQput62JmpFSS8y46_bIesyHmavSLKPPqBrVC3yAdTB5H6tTOqJkCtBUZN73qIscm3SbQuFuqDvfQDwWcKaxScu2d0JwHHXrveUc3vnIQ2x4VsnaEVG4gLkjFV1am8VG0kS1NQN6djMwM-Wymdr46OPHW79U1gXa_Jv-ORvcF")
             .build();
     
 
@@ -39,18 +42,33 @@ public class SpotfySearchAdapter implements SearchManager {
     }
     
     @Override
-    public void searchTrack(String trackName) {
+    public List<TrackContent> searchTrack(String trackName) {
         SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks(trackName).build();
         Object[] items;
+        List<TrackContent> trackContents = new ArrayList<>();
+        String tracksName;
+        String tracksId;
+        String tracksUri;
+        String tracksHref;
+        String tracksAlbum;
+        String tracksArtist;
         try {
             final Paging paging = searchTracksRequest.execute();
             items = paging.getItems();
             for (Object item : items) {
-                System.out.println(((Track) item).getName());
+                tracksName = (((Track)item).getName());
+                tracksAlbum = (((Track)item).getAlbum().getName());
+                tracksId = (((Track)item).getId());
+                tracksUri = (((Track) item).getUri());
+                tracksHref = (((Track) item).getHref());
+                ArtistSimplified[] name = ((Track) item).getArtists();
+                tracksArtist = name[0].getName();
+                trackContents.add(new SpotfyTrackContent(trackName, tracksAlbum, tracksHref, tracksId, tracksUri, tracksArtist));
             }
         } catch (Exception e) {
             System.out.println("Algo deu errado");
         }
+        return trackContents;
     }
     
     public static String searchTrackUri(String trackName){
