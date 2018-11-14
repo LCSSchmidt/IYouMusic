@@ -46,7 +46,7 @@ import java.util.List;
 
 public class SpotfyPlaylistAdapter implements PlaylistManager {
 
-    private static final String accessToken = "BQDrMLUDXF307G0ZCU0cksxUHlAbJYh1hlFi0EfeRgkXnsC69vlf-N7J8EGJZNEuDrdIgaF89hfIBabjChVvrirSg_vlslGvmS5_gui7KAF5F50m2FKa62JeQb-PGUM8dt8pgDyMXh6urSM5YmjQ6ZPetIY4UgJJWIDYScxgFq6PrKWW0FdAlCpP487A-C9ccbP0mzOU4GX6olirhw8yZj0h6VhdFoj47BGz4XdUaM9oHpjyQRQcp2gqR0MYW8BIY8Qm0OyY2Knr";
+    private static final String accessToken = "BQB07tYq8yqSw9DBFu7P9sc8lZJLlKnkHqgHq9TGX4U_tQ9ijNiL5di2M4T04-ZMEXIiefIIWYJCRRAh_utj7LLTXdI42bcFsAG8uy65D_Auwe_EWixJ577TaxxqOty2gkU52kR9n_TN23dXCq0gFofpCZEjZpT7AN9WT_K2r7AQPsXoQc56W3MIIFbCsTr2w6_BskJOQBaVklWuvtvOm373p4RjVBIyT3gu4mBEZUXlASQfEzuu7Z91x-mIaGutie-e7zCZpVx8";
     private static final String userId = "lusgo";
     private static String name;
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()

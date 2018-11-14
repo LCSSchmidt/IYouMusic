@@ -22,7 +22,7 @@ import java.util.List;
 public class SpotfySearchAdapter implements SearchManager {
 
     static SpotifyApi spotifyApi = new SpotifyApi.Builder()
-            .setAccessToken("BQAe-DLVJR45M-nvhYiXqxXw48Yo1iJeH8plHdZ321Fb7h1SY_20kSPaQKJoNMTU4dyt6ENoZYOCDbVjwkbnv5LGHYEsJklXkP5AQput62JmpFSS8y46_bIesyHmavSLKPPqBrVC3yAdTB5H6tTOqJkCtBUZN73qIscm3SbQuFuqDvfQDwWcKaxScu2d0JwHHXrveUc3vnIQ2x4VsnaEVG4gLkjFV1am8VG0kS1NQN6djMwM-Wymdr46OPHW79U1gXa_Jv-ORvcF")
+            .setAccessToken("BQB07tYq8yqSw9DBFu7P9sc8lZJLlKnkHqgHq9TGX4U_tQ9ijNiL5di2M4T04-ZMEXIiefIIWYJCRRAh_utj7LLTXdI42bcFsAG8uy65D_Auwe_EWixJ577TaxxqOty2gkU52kR9n_TN23dXCq0gFofpCZEjZpT7AN9WT_K2r7AQPsXoQc56W3MIIFbCsTr2w6_BskJOQBaVklWuvtvOm373p4RjVBIyT3gu4mBEZUXlASQfEzuu7Z91x-mIaGutie-e7zCZpVx8")
             .build();
     
 
@@ -56,6 +56,7 @@ public class SpotfySearchAdapter implements SearchManager {
             final Paging paging = searchTracksRequest.execute();
             items = paging.getItems();
             for (Object item : items) {
+                //System.out.println(((Track)item).getName());
                 tracksName = (((Track)item).getName());
                 tracksAlbum = (((Track)item).getAlbum().getName());
                 tracksId = (((Track)item).getId());

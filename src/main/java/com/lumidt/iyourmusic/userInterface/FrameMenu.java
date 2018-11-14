@@ -131,7 +131,6 @@ public class FrameMenu extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jMainPanel = new javax.swing.JPanel();
         jMPBackground = new javax.swing.JPanel();
@@ -194,7 +193,7 @@ public class FrameMenu extends javax.swing.JFrame {
         jMPRedFreePanel.add(jTextFMPSearch);
         jTextFMPSearch.setBounds(120, 9, 140, 24);
 
-        jMPButtonOption.setIcon(new javax.swing.ImageIcon("C:\\Users\\stit_\\Desktop\\seta_baixo_2.png")); // NOI18N
+        jMPButtonOption.setIcon(new javax.swing.ImageIcon(getClass().getResource("/seta_baixo_2.png"))); // NOI18N
         jMPButtonOption.setText("jLabel1");
         jMPButtonOption.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -409,7 +408,6 @@ public class FrameMenu extends javax.swing.JFrame {
         trackContents.addAll(spotfyPlaylist.getPlayListTracks(id));
         defTableModel = (DefaultTableModel) jTableSearchResults.getModel();
         defTableModel.setRowCount(0);
-        System.out.println(defTableModel.getRowCount());
         sWTrackContentToTable = new SWTrackContentToTable(trackContents);
     }
 
@@ -569,7 +567,6 @@ public class FrameMenu extends javax.swing.JFrame {
                     jMPPanelHeader.setLocation((windowWidth - 190), 40);
                     jMPPanelHeader.setSize(jMPPanelHeader.getWidth(), (jMPPanelHeader.getHeight() + 2));
                     Thread.sleep(1);
-                    System.out.println(jMPPanelHeader.getY());
                 }
             }
             return null;
