@@ -22,7 +22,7 @@ import java.util.List;
 public class SpotfySearchAdapter implements SearchManager {
 
     static SpotifyApi spotifyApi = new SpotifyApi.Builder()
-            .setAccessToken("BQB07tYq8yqSw9DBFu7P9sc8lZJLlKnkHqgHq9TGX4U_tQ9ijNiL5di2M4T04-ZMEXIiefIIWYJCRRAh_utj7LLTXdI42bcFsAG8uy65D_Auwe_EWixJ577TaxxqOty2gkU52kR9n_TN23dXCq0gFofpCZEjZpT7AN9WT_K2r7AQPsXoQc56W3MIIFbCsTr2w6_BskJOQBaVklWuvtvOm373p4RjVBIyT3gu4mBEZUXlASQfEzuu7Z91x-mIaGutie-e7zCZpVx8")
+            .setAccessToken("BQCVhdW0ZXiUahEeUrmbJJl85_Z2jsnN4DM3lhZZMm_RJ0c8L8Q9vw2dw9pKlXkiI_JbYa005E7Y8JKIgB2Tm9kmlX4sHd9maUf4aT9KDrjWGKvavTltyGTwZRh8CJ8KPYdxkr2miCzmddX8rdBpzs4C5I49jB1BRw93nyBDijvxOFpDaIPQKULLS4UDRjl_PtTAR3u_Y6UwObIBQmUAxITcRglFlvpmjGsQ3QJyikQkWEiGFQSGnxIjdtsp_Sw84nOaPZXzmHzp")
             .build();
     
 
@@ -64,7 +64,7 @@ public class SpotfySearchAdapter implements SearchManager {
                 tracksHref = (((Track) item).getHref());
                 ArtistSimplified[] name = ((Track) item).getArtists();
                 tracksArtist = name[0].getName();
-                trackContents.add(new SpotfyTrackContent(trackName, tracksAlbum, tracksHref, tracksId, tracksUri, tracksArtist));
+                trackContents.add(new SpotfyTrackContent(tracksName, tracksAlbum, tracksHref, tracksId, tracksUri, tracksArtist));
             }
         } catch (Exception e) {
             System.out.println("Algo deu errado");
