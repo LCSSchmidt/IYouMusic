@@ -25,6 +25,7 @@ package com.lumidt.iyourmusic.spotfy.playlist;
 
 import com.lumidt.iyourmusic.spotfy.SpotfyTrackContent;
 import com.lumidt.iyourmusic.PlaylistContent;
+import com.lumidt.iyourmusic.PlaylistListener;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.Playlist;
@@ -32,6 +33,7 @@ import com.wrapper.spotify.requests.data.playlists.CreatePlaylistRequest;
 import java.io.IOException;
 import com.lumidt.iyourmusic.PlaylistManager;
 import com.lumidt.iyourmusic.TrackContent;
+import com.lumidt.iyourmusic.spotfy.Spotify;
 import com.lumidt.iyourmusic.spotfy.search.SpotfySearchAdapter;
 import com.wrapper.spotify.model_objects.special.SnapshotResult;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
@@ -39,6 +41,7 @@ import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.PlaylistSimplified;
 import com.wrapper.spotify.model_objects.specification.PlaylistTrack;
 import com.wrapper.spotify.requests.data.playlists.AddTracksToPlaylistRequest;
+import com.wrapper.spotify.requests.data.playlists.GetListOfCurrentUsersPlaylistsRequest;
 import com.wrapper.spotify.requests.data.playlists.GetListOfUsersPlaylistsRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistsTracksRequest;
 import java.util.ArrayList;
@@ -46,19 +49,25 @@ import java.util.List;
 
 public class SpotfyPlaylistAdapter implements PlaylistManager {
 
-    private static final String accessToken = "BQB07tYq8yqSw9DBFu7P9sc8lZJLlKnkHqgHq9TGX4U_tQ9ijNiL5di2M4T04-ZMEXIiefIIWYJCRRAh_utj7LLTXdI42bcFsAG8uy65D_Auwe_EWixJ577TaxxqOty2gkU52kR9n_TN23dXCq0gFofpCZEjZpT7AN9WT_K2r7AQPsXoQc56W3MIIFbCsTr2w6_BskJOQBaVklWuvtvOm373p4RjVBIyT3gu4mBEZUXlASQfEzuu7Z91x-mIaGutie-e7zCZpVx8";
-    private static final String userId = "lusgo";
+    private static String userId;
     private static String name;
-    private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
-            .setAccessToken(accessToken)
-            .build();
+    private PlaylistListener listener;
+
+    public SpotfyPlaylistAdapter() {
+        this.userId = Spotify.userId;
+    }
+
+    @Override
+    public void addListener(PlaylistListener l) {
+        this.listener = l;
+    }
 
     @Override
     public void createPlaylist(String nameOfPlaylist) {
         CreatePlaylistRequest createPlaylistRequest;
 
         this.name = nameOfPlaylist;
-        createPlaylistRequest = spotifyApi.createPlaylist(userId, name)
+        createPlaylistRequest = Spotify.spotifyApi.createPlaylist(userId, name)
                 .collaborative(false)
                 .public_(false)
                 .description("Amazing music.")
@@ -67,7 +76,9 @@ public class SpotfyPlaylistAdapter implements PlaylistManager {
         try {
             final Playlist playlist = createPlaylistRequest.execute();
 
-            System.out.println("Playlist " + playlist.getName() + "criada");
+            //System.out.println("Playlist " + playlist.getName() + " criada");
+
+            listener.playlistCreated(nameOfPlaylist);
         } catch (IOException | SpotifyWebApiException e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -79,7 +90,7 @@ public class SpotfyPlaylistAdapter implements PlaylistManager {
     }
 
     private String getPlaylistId(String plalistName) {
-        GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest = spotifyApi
+        GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest = Spotify.spotifyApi
                 .getListOfUsersPlaylists(userId).limit(50)
                 .build();
 
@@ -106,7 +117,7 @@ public class SpotfyPlaylistAdapter implements PlaylistManager {
         String[] uris = new String[]{musicUri};
         String playlistId = getPlaylistId(playlistName);
 
-        AddTracksToPlaylistRequest addTracksToPlaylistRequest = spotifyApi
+        AddTracksToPlaylistRequest addTracksToPlaylistRequest = Spotify.spotifyApi
                 .addTracksToPlaylist(playlistId, uris)
                 .position(0)
                 .build();
@@ -122,7 +133,7 @@ public class SpotfyPlaylistAdapter implements PlaylistManager {
 
     @Override
     public List<TrackContent> getPlayListTracks(String playlistId) {
-        GetPlaylistsTracksRequest getPlaylistsTracksRequest = spotifyApi
+        GetPlaylistsTracksRequest getPlaylistsTracksRequest = Spotify.spotifyApi
                 .getPlaylistsTracks(playlistId)
                 .build();
         List<TrackContent> trackContents = new ArrayList<>();
@@ -153,32 +164,69 @@ public class SpotfyPlaylistAdapter implements PlaylistManager {
 
     @Override
     public List<PlaylistContent> getListOfUsersPlaylist() {
+        int index = 0;
+        int totalOfPlaylists;
         String playlistsName;
         String playlistsId;
         String playlistUri;
         String playlistHref;
         List<PlaylistContent> playlists = new ArrayList<>();
-        GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest = spotifyApi
-                .getListOfUsersPlaylists(userId).limit(50)
+        GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest;
+
+        totalOfPlaylists = getListOfCurrentUsersPlaylists();
+        
+        while(index <= totalOfPlaylists) {
+            getListOfUsersPlaylistsRequest = Spotify.spotifyApi
+                .getListOfUsersPlaylists(userId).limit(50).offset(index)
                 .build();
+            try {
+                final Paging<PlaylistSimplified> playlistSimplifiedPaging = getListOfUsersPlaylistsRequest.execute();
 
-        try {
-            final Paging<PlaylistSimplified> playlistSimplifiedPaging = getListOfUsersPlaylistsRequest.execute();
+                PlaylistSimplified[] playlistSimplifieds = playlistSimplifiedPaging.getItems();
 
-            PlaylistSimplified[] playlistSimplifieds = playlistSimplifiedPaging.getItems();
+                for (PlaylistSimplified playlistSimplified : playlistSimplifieds) {
+                    playlistsName = playlistSimplified.getName();
+                    playlistsId = playlistSimplified.getId();
+                    playlistUri = playlistSimplified.getUri();
+                    playlistHref = playlistSimplified.getHref();
+                    playlists.add(new SpotfyPlaylistContent(playlistsName, playlistsId, playlistUri, playlistHref));
+                }
 
-            for (PlaylistSimplified playlistSimplified : playlistSimplifieds) {
-                playlistsName = playlistSimplified.getName();
-                playlistsId = playlistSimplified.getId();
-                playlistUri = playlistSimplified.getUri();
-                playlistHref = playlistSimplified.getHref();
-                playlists.add(new SpotfyPlaylistContent(playlistsName, playlistsId, playlistUri, playlistHref));
+            } catch (IOException | SpotifyWebApiException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+            index += 50;
+        }
+        return playlists;
+    }
+
+    @Override
+    public int getListOfCurrentUsersPlaylists() {
+        int index = 0;
+        int totalOfPlaylists = 0;
+        int total = 0;
+        GetListOfCurrentUsersPlaylistsRequest getListOfCurrentUsersPlaylistsRequest = Spotify.spotifyApi
+                .getListOfCurrentUsersPlaylists()
+                .limit(50)
+                .offset(index)
+                .build();
+        do {
+            try {
+                final Paging<PlaylistSimplified> playlistSimplifiedPaging = getListOfCurrentUsersPlaylistsRequest.execute();
+                total += playlistSimplifiedPaging.getItems().length;
+                totalOfPlaylists = playlistSimplifiedPaging.getItems().length;
+            } catch (Exception e) {
+                System.out.println("Error on getListOfCurrentUsersPlaylists: " + e.getMessage());
             }
 
-        } catch (IOException | SpotifyWebApiException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        return playlists;
+            index += 50;
+            getListOfCurrentUsersPlaylistsRequest = Spotify.spotifyApi
+                    .getListOfCurrentUsersPlaylists()
+                    .limit(50)
+                    .offset(index)
+                    .build();
+        } while (totalOfPlaylists == 50);
+        //System.out.println("Total of playlists: " + total);
+        return total;
     }
 }

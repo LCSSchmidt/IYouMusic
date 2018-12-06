@@ -1,39 +1,22 @@
 package com.lumidt.iyourmusic.userInterface;
 
 import com.lumidt.iyourmusic.PlaylistContent;
+import com.lumidt.iyourmusic.PlaylistListener;
 import com.lumidt.iyourmusic.TrackContent;
-import com.lumidt.iyourmusic.spotfy.player.SpotfyPlayerAdapter;
-import com.lumidt.iyourmusic.spotfy.search.SpotfySearchAdapter;
-import com.lumidt.iyourmusic.spotfy.playlist.SpotfyPlaylistAdapter;
-import com.sun.prism.impl.PrismSettings;
-import java.awt.Color;
+import com.lumidt.iyourmusic.spotfy.Spotify;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Label;
 import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingWorker;
-import javax.swing.event.TableModelListener;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.table.DefaultTableModel;
 
 public class FrameMenu extends javax.swing.JFrame {
 
-    SpotfySearchAdapter spotfySearch;
-    SpotfyPlaylistAdapter spotfyPlaylist;
-    SpotfyPlayerAdapter spotfyPlayer;
+    Spotify spotify;
     List<PlaylistContent> playlistContents;
     List<TrackContent> trackContents;
     List<String> userPlaylistsName;
@@ -44,17 +27,15 @@ public class FrameMenu extends javax.swing.JFrame {
     SWListTable swTableUserPlaylists;
     SWPanelHeader sWPanelHeader;
     SWTrackContentToTable sWTrackContentToTable;
-    SWUptadeTableUserPlaylists sWUptadeTableUserPlaylists;
     TrackContent selectedTrack;
     Thread th;
     int selecetedRow;
 
     public FrameMenu() {
         initComponents();
-
-        spotfySearch = new SpotfySearchAdapter();
-        spotfyPlaylist = new SpotfyPlaylistAdapter();
-        spotfyPlayer = new SpotfyPlayerAdapter();
+        
+        spotify = new Spotify("lusgo");
+        spotify.playlist.getListOfCurrentUsersPlaylists();
         userPlaylistsName = new ArrayList<>();
         playlistContents = new ArrayList<>();
         trackContents = new ArrayList<>();
@@ -90,42 +71,17 @@ public class FrameMenu extends javax.swing.JFrame {
 
             }
         });
+        spotify.playlist.addListener(new PlaylistListener() {
+            @Override
+            public void playlistCreated(String newPlayListName) {
+                userPlaylistsName.clear();
+                playlistContents.clear();
+                searchUserPlaylists();
+                addUserPlaylistsToTable(userPlaylistsName);
+            }
+        });
         searchUserPlaylists();
         addUserPlaylistsToTable(userPlaylistsName);
-//        th = new Thread() {
-//            @Override
-//            public void run() {
-//                do {
-//                    searchUserPlaylists();
-//                    boolean itemJaExistente = false;
-//                    List<String> newPlaylists = new ArrayList<>();
-//                    defTableModelToSWUpdate = (DefaultTableModel) jTableUserPlaylists.getModel();
-//                    for (String string : userPlaylistsName) {
-//                        for (int indice = 0; indice < defTableModel.getRowCount(); indice++) {
-//                            if (defTableModel.getValueAt(indice, 0).equals(string)) {
-//                                itemJaExistente = true;
-//                            }
-//                            if (!itemJaExistente) {
-//                                newPlaylists.add(string);
-//                            }
-//                        }
-//                    }
-//                    sWUptadeTableUserPlaylists = new SWUptadeTableUserPlaylists(newPlaylists);
-//                    System.out.println("entrouuuuuuuuuu");
-//                    try {
-//                        swTableUserPlaylists.doInBackground();
-//                    } catch (Exception e) {
-//                        System.out.println("Erro na thread");
-//                    }
-//                    try {
-//                        Thread.sleep(15000);
-//                    } catch (Exception e) {
-//                        System.out.println("Erro na thread");
-//                    }
-//                } while (true);
-//            }
-//        };
-//        th.start();
     }
 
     @SuppressWarnings("unchecked")
@@ -405,7 +361,7 @@ public class FrameMenu extends javax.swing.JFrame {
     public void getTracksFromSelectedPlaylist(int selectedPlaylist) {
         String id = playlistContents.get(selectedPlaylist).getId();
         trackContents.clear();
-        trackContents.addAll(spotfyPlaylist.getPlayListTracks(id));
+        trackContents.addAll(spotify.playlist.getPlayListTracks(id));
         defTableModel = (DefaultTableModel) jTableSearchResults.getModel();
         defTableModel.setRowCount(0);
         sWTrackContentToTable = new SWTrackContentToTable(trackContents);
@@ -416,7 +372,7 @@ public class FrameMenu extends javax.swing.JFrame {
         defTableModel.setRowCount(0);
         try {
             trackContents.clear();
-            trackContents.addAll(spotfySearch.searchTrack(jTextFMPSearch.getText()));
+            trackContents.addAll(spotify.search.searchTrack(jTextFMPSearch.getText()));
             try {
                 sWTrackContentToTable = new SWTrackContentToTable(trackContents);
             } catch (Exception e) {
@@ -439,21 +395,21 @@ public class FrameMenu extends javax.swing.JFrame {
 
     private void jMPBAddToPlaylistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMPBAddToPlaylistMouseClicked
         selectedTrack = getTrackFromSearchResults();
-        spotfyPlaylist.addTracksToPlayList(jTextFMPSearch.getText(), selectedTrack.getName());
+        spotify.playlist.addTracksToPlayList(jTextFMPSearch.getText(), selectedTrack.getName());
     }//GEN-LAST:event_jMPBAddToPlaylistMouseClicked
 
     private void jMPPlayButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMPPlayButtonMouseClicked
         jMPPlayButton.setVisible(false);
         TrackContent trackFromSearchResults = getTrackFromSearchResults();
         devices.clear();
-        devices.addAll(spotfyPlayer.getUserAvailableDevices());
-        spotfyPlayer.startResumeUserPlayback(devices.get(0), trackFromSearchResults.getUri());
+        devices.addAll(spotify.player.getUserAvailableDevices());
+        spotify.player.startResumeUserPlayback(devices.get(0), trackFromSearchResults.getUri());
         jMPPauseButton.setVisible(true);
     }//GEN-LAST:event_jMPPlayButtonMouseClicked
 
     private void jMPPauseButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMPPauseButtonMouseClicked
         jMPPauseButton.setVisible(false);
-        spotfyPlayer.pauseUserPlayback(devices.get(0));
+        spotify.player.pauseUserPlayback(devices.get(0));
         jMPPlayButton.setVisible(true);
     }//GEN-LAST:event_jMPPauseButtonMouseClicked
 
@@ -476,12 +432,18 @@ public class FrameMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jMPBToNewPlaylistMouseClicked
 
     private void jMPBCreatePlaylistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMPBCreatePlaylistMouseClicked
-        spotfyPlaylist.createPlaylist(jTextFMPSearch.getText());
-        sWUptadeTableUserPlaylists = new SWUptadeTableUserPlaylists(jTextFMPSearch.getText());
+        
+        th = new Thread(){
+            @Override
+            public void run() {
+                spotify.playlist.createPlaylist(jTextFMPSearch.getText());
+            }
+        };
+        th.run();
     }//GEN-LAST:event_jMPBCreatePlaylistMouseClicked
 
     private void searchUserPlaylists() {
-        playlistContents.addAll(spotfyPlaylist.getListOfUsersPlaylist());
+        playlistContents.addAll(spotify.playlist.getListOfUsersPlaylist());
         for (PlaylistContent playlistContent : playlistContents) {
             userPlaylistsName.add(playlistContent.getName());
         }
@@ -489,35 +451,12 @@ public class FrameMenu extends javax.swing.JFrame {
 
     private void addUserPlaylistsToTable(List<String> userPlaylists) {
         defTableModel = (DefaultTableModel) jTableUserPlaylists.getModel();
+        defTableModel.setRowCount(0);
         try {
             swTableUserPlaylists.init(userPlaylistsName);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private class SWUptadeTableUserPlaylists extends SwingWorker<Void, Void> {
-
-        Object[] rowData;
-        String name;
-
-        public SWUptadeTableUserPlaylists(String name) {
-            this.name = name;
-            rowData = new Object[1];
-            try {
-                doInBackground();
-            } catch (Exception e) {
-            }
-        }
-
-        @Override
-        protected Void doInBackground() throws Exception {
-            defTableModelToSWUpdate = (DefaultTableModel) jTableUserPlaylists.getModel();
-            rowData[0] = name;
-            defTableModelToSWUpdate.addRow(rowData);
-            return null;
-        }
-
     }
 
     private class SWTrackContentToTable extends SwingWorker<DefaultTableModel, Void> {
@@ -583,6 +522,7 @@ public class FrameMenu extends javax.swing.JFrame {
             itemJaExistente = false;
             rowData = new Object[1];
             itemsToReceive = new ArrayList<>();
+            itemsToReceive.clear();
             itemsToReceive.addAll(str);
             try {
                 doInBackground();

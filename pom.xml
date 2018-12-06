@@ -20,11 +20,6 @@
             <id>google-api-services</id>
             <url>http://google-api-client-libraries.appspot.com/mavenrepo</url>
         </repository>
-        <repository>
-            <id>unknown-jars-temp-repo</id>
-            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
-            <url>file:${project.basedir}/lib</url>
-        </repository>
     </repositories>
     <!--DEPENDENCIES-->
     <dependencies>

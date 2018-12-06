@@ -7,6 +7,7 @@ package com.lumidt.iyourmusic.spotfy.player;
 
 import com.google.gson.JsonParser;
 import com.lumidt.iyourmusic.PlayerAdapter;
+import com.lumidt.iyourmusic.spotfy.Spotify;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.miscellaneous.Device;
@@ -23,15 +24,9 @@ import java.util.List;
  */
 public class SpotfyPlayerAdapter implements PlayerAdapter {
 
-    private static final String accessToken = "BQCsnzbAKQQaxJ7J47eGPrIy8cRnY0Vpba-SR6OFUasnuxTVS545QDNCJj5OLbd5heLNWUTQEMvcXfS9BFAugxsBa-pzSbG2QouBZL3lFOt9wljLTytGt94GcuUlfSKqhiFYc5ojKRmbpVh8EAToyuLaacH_Ap9ACDxeV6MAqo00QMrWxmK9wH5Su6Xr7TZ5vMhG83lP-lndb34yPY-dkWtWWUrZMpoePX2fzbLqDL-L5Pf2zV2n8wrXDcQkLnsbGsvguGwViVJs";
-
-    private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
-            .setAccessToken(accessToken)
-            .build();
-
     @Override
     public void startResumeUserPlayback(String deviceId, String trackUri) {
-        StartResumeUsersPlaybackRequest startResumeUsersPlaybackRequest = spotifyApi
+        StartResumeUsersPlaybackRequest startResumeUsersPlaybackRequest = Spotify.spotifyApi
                 .startResumeUsersPlayback()
                 .device_id(deviceId)
                 .uris(new JsonParser().parse("[\"" + trackUri + "\"]").getAsJsonArray())
@@ -49,7 +44,7 @@ public class SpotfyPlayerAdapter implements PlayerAdapter {
 
     @Override
     public List<String> getUserAvailableDevices() {
-        GetUsersAvailableDevicesRequest getUsersAvailableDevicesRequest = spotifyApi
+        GetUsersAvailableDevicesRequest getUsersAvailableDevicesRequest = Spotify.spotifyApi
                 .getUsersAvailableDevices()
                 .build();
         List<String> avaliableDevices = new ArrayList<>();
@@ -66,7 +61,7 @@ public class SpotfyPlayerAdapter implements PlayerAdapter {
 
     @Override
     public void pauseUserPlayback(String device) {
-        PauseUsersPlaybackRequest pauseUsersPlaybackRequest = spotifyApi.pauseUsersPlayback()
+        PauseUsersPlaybackRequest pauseUsersPlaybackRequest = Spotify.spotifyApi.pauseUsersPlayback()
                 .device_id(device)
                 .build();
         try {

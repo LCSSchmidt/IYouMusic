@@ -21,11 +21,6 @@ import java.util.List;
  */
 public class SpotfySearchAdapter implements SearchManager {
 
-    static SpotifyApi spotifyApi = new SpotifyApi.Builder()
-            .setAccessToken("BQCVhdW0ZXiUahEeUrmbJJl85_Z2jsnN4DM3lhZZMm_RJ0c8L8Q9vw2dw9pKlXkiI_JbYa005E7Y8JKIgB2Tm9kmlX4sHd9maUf4aT9KDrjWGKvavTltyGTwZRh8CJ8KPYdxkr2miCzmddX8rdBpzs4C5I49jB1BRw93nyBDijvxOFpDaIPQKULLS4UDRjl_PtTAR3u_Y6UwObIBQmUAxITcRglFlvpmjGsQ3QJyikQkWEiGFQSGnxIjdtsp_Sw84nOaPZXzmHzp")
-            .build();
-    
-
     @Override
     public void searchAlbum(String albumName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -43,7 +38,7 @@ public class SpotfySearchAdapter implements SearchManager {
     
     @Override
     public List<TrackContent> searchTrack(String trackName) {
-        SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks(trackName).build();
+        SearchTracksRequest searchTracksRequest = Spotify.spotifyApi.searchTracks(trackName).build();
         Object[] items;
         List<TrackContent> trackContents = new ArrayList<>();
         String tracksName;
@@ -73,7 +68,7 @@ public class SpotfySearchAdapter implements SearchManager {
     }
     
     public static String searchTrackUri(String trackName){
-        SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks(trackName).build();
+        SearchTracksRequest searchTracksRequest = Spotify.spotifyApi.searchTracks(trackName).build();
         Object[] items;
         try {
             final Paging paging = searchTracksRequest.execute();
